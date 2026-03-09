@@ -1,0 +1,222 @@
+{% extends "child_base.html" %}
+
+{% block content %}
+<div class="page-title">
+ <h2 class="fw-bold mb-4">Dashboard</h2>
+</div>
+
+
+<div class="row g-4 mb-4">
+
+<div class="col-md-4">
+<div class="card shadow-sm border-start border-0 border-success bg-opacity-10 shadow-lg rounded-4 h-100 border-4 ">
+<div class="card-body p-4">
+
+<div class="d-flex align-items-center ms-2">
+<i class="fa-solid fa-wallet me-2"></i>
+<h6 class="mb-0">Allowance</h6>
+</div>
+
+<h3 class="fw-bold text-success mt-3 ms-2 fs-4">
+₦{{ allowance }}
+</h3>
+
+</div>
+</div>
+</div>
+
+
+<div class="col-md-4">
+<div class="card shadow-sm border-start border-0 border-secondary bg-opacity-10 shadow-lg rounded-4 h-100 border-4 ">
+<div class="card-body">
+
+<div class="d-flex align-items-center ms-2">
+<i class="fa-solid fa-money-bill-wave me-2"></i>
+<h6 class="mb-0">Total Spent</h6>
+</div>
+
+<h3 class="fw-bold text-muted mt-3 ms-2 fs-4" >
+₦{{ total_spent }}
+</h3>
+
+</div>
+</div>
+</div>
+
+
+<div class="col-md-4">
+<div class="card shadow-sm border-start border-0 border-primary bg-opacity-10 shadow-lg rounded-4 h-100 border-4 ">
+<div class="card-body p-4">
+
+<div class="d-flex align-items-center">
+<i class="fa-solid fa-piggy-bank me-2"></i>
+<h6 class="mb-0">Balance</h6>
+</div>
+
+<h3 class="fw-bold text-primary mt-2 fs-4">
+₦{{ balance }}
+</h3>
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="card shadow-sm border-0 mt-5 mb-3">
+    <div class="card-body">
+
+        <h5 class="mb-4">Spending Analytics</h5>
+        <div class="card-body" style="height:300px">
+
+<canvas id="childChart" style="height:300px;"></canvas>
+<p id="noDataMessage" class="text-center mt-3" style="display:none;">
+  No spending data yet. Add your first expense 💸
+</p>
+
+</div>
+        
+
+    </div>
+</div>
+
+<!-- RECENT TRANSACTIONS -->
+
+<div class="card shadow-sm rounded-4">
+
+<div class="card-header bg-white border-0">
+<h6 class="mb-0">Recent Transactions</h6>
+<a href="{% url 'Mytransactions' %}" class="btn btn-sm btn-outline-primary float-end">
+View All
+</a>
+</div>
+
+<div class="card-body">
+
+{% if recent_transactions %}
+
+<table class="table">
+
+<thead>
+<tr>
+<th>Category</th>
+<th>Amount</th>
+<th>Date</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for transaction in recent_transactions %}
+
+<tr>
+
+<td>{{ transaction.category }}</td>
+
+<td>
+
+{% if transaction.transaction_type == "credit" %}
+<span class="text-success">+ ₦{{ transaction.amount }}</span>
+{% else %}
+<span class="text-danger">- ₦{{ transaction.amount }}</span>
+{% endif %}
+
+</td>
+
+<td>{{ transaction.date|date:"M d, Y" }}</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% else %}
+
+<p class="text-muted">No transactions yet</p>
+
+{% endif %}
+
+</div>
+
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const days = {{ chart_days|safe }};
+const datasets = {{ chart_datasets|safe }};
+
+// Canvas & fallback
+const ctx = document.getElementById("childChart");
+const noDataMsg = document.getElementById("noDataMessage");
+
+// Check if datasets exist AND have any non-zero data
+const hasData = datasets.some(ds => ds.data.some(value => value > 0));
+
+if (datasets && datasets.length > 0) {
+
+  noDataMsg.style.display = "none";
+
+  const defaultColors = [
+    "#0d6efd", // blue
+    "#198754", // green
+    "#ffc107", // yellow
+    "#dc3545", // red
+    "#6f42c1", // purple
+    "#20c997"  // teal
+  ];
+
+  datasets.forEach((dataset, index) => {
+    if (dataset.label === "No Spending") {
+      // Use light gray for placeholder dataset
+      dataset.borderColor = "#c0c0c0";
+      dataset.backgroundColor = "#c0c0c0";
+      dataset.pointRadius = 4;
+      dataset.pointHoverRadius = 6;
+      dataset.tension = 0.4;
+      dataset.fill = false;
+    } else {
+      dataset.borderColor = defaultColors[index % defaultColors.length];
+      dataset.backgroundColor = defaultColors[index % defaultColors.length];
+      dataset.tension = 0.4;
+      dataset.fill = false;
+      dataset.pointRadius = 6;
+      dataset.pointHoverRadius = 8;
+    }
+  });
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: days,
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "top" },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label + ": ₦" + context.raw;
+            }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+} else {
+  noDataMsg.style.display = "block";
+}
+</script>
+{% endblock %}

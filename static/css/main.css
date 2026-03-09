@@ -12,7 +12,9 @@
     src: url("{% static 'fonts/Poppins-Regular.ttf' %}");
 }
 
-
+.main-content{
+    width: 100%;
+}
 
 
 

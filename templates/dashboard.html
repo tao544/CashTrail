@@ -1,0 +1,317 @@
+{% extends "base.html" %} {% load static %} {% block sidebar %}
+<!-- Offcanvas Sidebar -->
+<div
+  class="offcanvas offcanvas-start bg-black text-light"
+  tabindex="-1"
+  id="sidebarMenu"
+>
+  <div class="offcanvas-header d-flex align-items-center">
+    <img
+      src="{% static 'image/cashtrail-darklogo.png' %}"
+      height="50"
+      class="img-fluid"
+    />
+    <button
+      type="button"
+      class="btn-close btn-close-white ms-auto"
+      data-bs-dismiss="offcanvas"
+    ></button>
+  </div>
+
+  <div class="offcanvas-body d-flex flex-column p-3">
+    {% if request.user.is_authenticated %}
+    <div class="mb-4">
+      <h6 class="fw-semibold fs-5 text-light">Welcome, {{ request.user.first_name }}</h6>
+      <!-- Show email only on larger screens -->
+      <small class="text-light d-none d-md-block"
+        >{{ request.user.email }}</small
+      >
+      <hr class="border-secondary" />
+    </div>
+    {% endif %}
+
+    <ul class="nav nav-pills flex-column gap-2 flex-grow-1">
+      <li>
+        <a class="nav-link text-light active" href="#"
+          ><i class="fas fa-home me-2 active"></i> Dashboard</a
+        >
+      </li>
+      <li>
+        <a class="nav-link text-light" href="{% url "mychildren" %}"
+          ><i class="fas fa-users me-2"></i> My Children</a
+        >
+      </li>
+      <li>
+        <a class="nav-link text-light" href="{% url 'Fundwallet' %}"
+          ><i class="fas fa-wallet me-2"></i> Fund Wallet</a
+        >
+      </li>
+      <li>
+        <a class="nav-link text-light" href="{% url 'all_transactions' %}"
+          ><i class="fas fa-receipt me-2"></i> Transactions</a
+        >
+      </li>
+      <li>
+        <a class="nav-link text-light" href="#"
+          ><i class="fas fa-chart-pie me-2"></i> Reports</a
+        >
+      </li>
+      <li>
+        <a class="nav-link text-light" href="#"
+          ><i class="fas fa-cog me-2"></i> Settings</a
+        >
+      </li>
+    </ul>
+
+    <hr class="border-secondary" />
+    <a class="nav-link text-danger rounded-3 mt-auto" href="#"
+      ><i class="fas fa-sign-out-alt me-2"></i> Logout</a
+    >
+  </div>
+</div>
+{% endblock %} {% block content %}
+<div class="container-fluid bg-dark text-light min-vh-100 py-4 px-2 px-md-4">
+  <!-- Dashboard Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Left: Menu button -->
+    <button
+      class="btn border-0 text-light"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#sidebarMenu"
+      aria-controls="sidebarMenu"
+    >
+      <i class="fas fa-bars"></i> Menu
+    </button>
+
+    <!-- Center: Dashboard title -->
+    <h2 class="fw-bold mb-0 text-center flex-grow-1">Dashboard</h2>
+    
+
+    <!-- Right: Logout button -->
+    <a href="{% url 'account_logout' %}" class="btn btn-primary">Logout</a>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  
+    <div class="row g-3 g-md-4 mb-5">
+      <div class="col-12 col-md-6 col-xl-3">
+        <div
+          class="card bg-secondary bg-opacity-10 border-0 shadow-lg rounded-4 h-100 border-start border-success border-4"
+        >
+          <div class="card-body p-4">
+            <div class="d-flex ms-2">
+              <i class="fa-solid fa-wallet me-2 fs-4"></i>
+              <h6 class="text-light mb-0">Total Money Funded</h6>
+            </div>
+            <h3 class="fw-bold text-success ms-2">₦0</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div
+          class="card bg-secondary bg-opacity-10 border-0 shadow-lg rounded-4 h-100 border-start border-danger border-4"
+        >
+          <div class="card-body p-4">
+            <div class="d-flex ms-2">
+              <i class="fa-solid fa-money-bill-wave me-2 fs-4"></i>
+              <h6 class="text-light mb-0">Total Money Spent</h6>
+            </div>
+            <h3 class="fw-bold text-danger ms-2">₦0</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div
+          class="card bg-secondary bg-opacity-10 border-0 shadow-lg rounded-4 h-100 border-start border-info border-4"
+        >
+          <div class="card-body p-4">
+            <div class="d-flex ms-2">
+              <i class="fa-solid fa-piggy-bank me-2 fs-4"></i>
+              <h6 class="text-light mb-0">Remaining Balance</h6>
+            </div>
+            <h3 class="fw-bold text-info ms-2">₦0</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div
+          class="card bg-secondary bg-opacity-10 border-0 shadow-lg rounded-4 h-100 border-start border-light border-4"
+        >
+          <div class="card-body p-4">
+            <div class="d-flex ms-2">
+              <i class="fa-solid fa-child me-2 fs-4"></i>
+              <h6 class="text-light mb-0">Children</h6>
+            </div>
+            <h3 class="fw-bold text-warning ms-3">0</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row g-3 g-lg-4 mb-5">
+      <div class="col-12 col-lg-6">
+        <div
+          class="card bg-secondary bg-opacity-10 border-0 shadow-lg rounded-4 h-100"
+        >
+          <div class="card-header bg-transparent border-0 fw-semibold">
+            <h5 class="text-light mt-2 fs-6 fst-italic">
+              Spending by Category
+            </h5>
+          </div>
+          {% if categories %}
+          <div class="card-body" style="height: 300px">
+            <canvas id="pieChart"></canvas>
+          </div>
+          {% else %}
+          <div class="card-body text-center py-5">
+            <p class="text-light mb-0">
+              No transactions yet. Start tracking your spending 💸
+            </p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <div
+          class="card bg-secondary bg-opacity-10 border-0 shadow-lg rounded-4 h-100"
+        >
+          <div class="card-header bg-transparent border-0 fw-semibold">
+            <h5 class="text-light mt-2 fs-6 fst-italic">Monthly Spending</h5>
+          </div>
+          {% if months %}
+          <div class="card-body" style="height: 300px">
+            <canvas id="barChart"></canvas>
+          </div>
+          {% else %}
+          <div class="card-body text-center py-5">
+            <p class="text-light mb-0">No monthly spending yet.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="card bg-secondary bg-opacity-10 border-0 shadow-lg rounded-4">
+      <div
+        class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center"
+      >
+        <h5 class="text-light mt-2 fs-6 fst-italic">Recent Activity</h5>
+        <a
+          href="{% url 'all_transactions' %}"
+          class="text-success small text-decoration-none"
+          >View All</a
+        >
+      </div>
+
+      <div class="card-body p-0 recent-activity">
+
+    {% if recent_transactions %}
+
+        {% for transaction in recent_transactions %}
+
+        <div
+          class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center px-3 py-3 border-bottom border-secondary transaction-item"
+        >
+          <div class="mb-2 mb-md-0">
+            <div class="fw-semibold text-light">
+              {{ transaction.child_name }}
+            </div>
+            <small class="text-light">
+              {{ transaction.category }} • {{ transaction.date|date:"M d, Y" }}
+            </small>
+          </div>
+
+          <div class="text-md-end">
+            {% if transaction.transaction_type == "credit" %}
+                <span class="fw-bold text-success">
+                    + ₦{{ transaction.amount }}
+                </span>
+            {% else %}
+                <span class="fw-bold text-danger">
+                    - ₦{{ transaction.amount }}
+                </span>
+            {% endif %}
+          </div>
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="text-center text-muted py-5">
+            <p class="mb-0 text-light">
+                No transactions yet. Once activity is recorded, it will appear here.
+            </p>
+        </div>
+
+    {% endif %}
+
+</div>
+    </div>
+</div>
+
+
+
+<script src="{% static 'js/script.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+  const categories = {{ categories|safe }};
+  const categoryTotals = {{ category_totals|safe }};
+  const months = {{ months|safe }};
+  const monthlyTotals = {{ monthly_totals|safe }};
+
+  // PIE CHART
+  if (categoryTotals.length > 0) {
+      new Chart(document.getElementById('pieChart'), {
+          type: 'pie',
+          data: {
+              labels: categories,
+              datasets: [{
+                  data: categoryTotals,
+                  backgroundColor: ['#0d6efd','#198754','#ffc107','#dc3545','#6610f2']
+              }]
+          },
+          options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+          tooltip: {
+              callbacks: {
+                  label: function(context) {
+                      const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                      const value = context.raw;
+                      const percentage = ((value / total) * 100).toFixed(1);
+                      return `${context.label}: ₦${value} (${percentage}%)`;
+                  }
+              }
+          }
+      }
+  }
+      });
+  }
+
+  // BAR CHART
+  if (monthlyTotals.length > 0) {
+      new Chart(document.getElementById('barChart'), {
+          type: 'bar',
+          data: {
+              labels: months,
+              datasets: [{
+                  label: 'Monthly Spending',
+                  data: monthlyTotals,
+                  backgroundColor: '#0d6efd'
+              }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+      });
+  }
+</script>
+{% endblock %}

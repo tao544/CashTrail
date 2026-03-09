@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid bg-dark text-light min-vh-100 py-4 px-2 px-md-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-light">My Children</h3>
+            <p class="text-light mb-0">
+                Manage your children accounts and monitor their spending.
+            </p>
+        </div>
+
+        <a href="{% url 'Addchild' %}" class="btn btn-primary">
+            + Add Child
+        </a>
+    </div>
+
+    <div class="row g-4">
+
+        {% if children %}
+            {% for item in children %}
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card bg-dark text-light shadow-lg border-0 rounded-4 h-100">
+
+                    <div class="card-body">
+
+                        <!-- Child Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+
+                            <div>
+                                <h5 class="fw-bold mb-0">
+                                    {{ item.child.get_full_name|default:item.child.username }}
+                                </h5>
+                                <small class="text-muted">
+                                    Username: {{ item.child.username }}
+                                </small>
+                            </div>
+
+                            {% if item.child.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Disabled</span>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Financial Summary -->
+                        <div class="mb-3">
+                            <p class="mb-1">
+                                <strong>Allowance:</strong> ₦{{ item.allowance }}
+                            </p>
+                            <p class="mb-1">
+                                <strong>Total Spent:</strong> ₦{{ item.total_spent }}
+                            </p>
+                            <p class="mb-2">
+                                <strong>Balance:</strong> ₦{{ item.balance }}
+                            </p>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="mb-3">
+                            <div class="progress rounded-pill" style="height:8px;">
+                                <div class="progress-bar bg-info"
+                                     style="width: {{ item.percentage_used }}%;">
+                                </div>
+                            </div>
+                            <small class="text-muted">
+                                {{ item.percentage_used }}% of allowance used
+                            </small>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2">
+
+                            <a href="{% url 'child_detail' item.child.id %}"
+                               class="btn btn-outline-light btn-sm">
+                                View Activity
+                            </a>
+
+                            {% comment %} <a href="{% url 'fund_child' item.child.id %}"
+                               class="btn btn-success btn-sm">
+                                Fund Wallet
+                            </a> {% endcomment %}
+
+                            {% if item.child.is_active %}
+                                {% comment %} <a href="{% url 'disable_child' item.child.id %}"
+                                   class="btn btn-danger btn-sm">
+                                    Disable Account
+                                </a> {% endcomment %}
+                            {% else %}
+                                {% comment %} <a href="{% url 'enable_child' item.child.id %}"
+                                   class="btn btn-secondary btn-sm">
+                                    Enable Account
+                                </a> {% endcomment %}
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+        {% else %}
+
+            <!-- Empty State -->
+            <div class="col-12 text-center py-5">
+                <h5 class="text-muted">No children added yet.</h5>
+                <p class="text-muted">
+                    Click the "Add Child" button to create a child account.
+                </p>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

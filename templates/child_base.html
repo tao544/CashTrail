@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Child Dashboard</title>
+
+<link rel="shortcut icon" href="{% static 'image/cash-favicon.png' %}" type="image/x-icon" />
+
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          crossorigin="anonymous" />
+    <link href="{% static 'css/childdash.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/childprofile.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/childlogin.css' %}" rel="stylesheet" />
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+          integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@400;600&display=swap" />
+
+<script src="https://kit.fontawesome.com/7a3b8c9e6b.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+</head>
+
+<body>
+<!-- Mobile navbar -->
+<div class="mobile-navbar d-md-none">
+  <button class="btn sidebar-toggle">
+    <i class="fa fa-bars"></i>
+  </button>
+  <div class="navbar-logo">
+    <img src="{% static 'image/cashtrail-darklogo.png' %}" height="40px">
+  </div>
+</div>
+
+<!-- Sidebar (desktop + offcanvas for mobile) -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-title d-none d-md-block">
+    <img src="{% static 'image/cashtrail-darklogo.png' %}" height="70px">
+  </div>
+  <a href="{% url 'childrendashboard' %}"><i class="fa fa-home me-2"></i> Dashboard</a>
+  <a href="{% url 'Addexpense' %}"><i class="fa fa-plus-circle me-2"></i> Add Expense</a>
+  <a href="{% url 'Mytransactions' %}"><i class="fa fa-receipt me-2"></i> My Transactions</a>
+  <a href="{% url 'Childprofile' %}"><i class="fa fa-user me-2"></i> Profile</a>
+  <hr>
+  <a href="{% url 'account_logout' %}" class="text-danger"><i class="fa fa-sign-out-alt me-2"></i> Logout</a>
+</div>
+
+<!-- Overlay for mobile -->
+<div class="overlay" id="overlay"></div>
+
+<div class="main-content">
+  {% block content %}
+  {% endblock %}
+</div>
+<script src="{% static "js/child.js" %}"></script>
+</body>
+</html>

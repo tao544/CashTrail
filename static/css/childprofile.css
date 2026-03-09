@@ -1,0 +1,106 @@
+/* General card styling */
+.card {
+  border-radius: 1rem;
+  transition: all 0.25s ease-in-out;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Hover effect for interactive feel */
+.hover-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* Profile header avatar */
+.card-body img.rounded-circle {
+  border: 2px solid #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  width: 60px;
+  height: 60px;
+}
+
+
+/* Badge styling */
+.badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Gradient backgrounds for highlight cards */
+.bg-gradient.bg-success {
+  background: linear-gradient(135deg, #198754, #20c997);
+}
+
+.bg-gradient.bg-primary {
+  background: linear-gradient(135deg, #0d6efd, #4dabf7);
+}
+
+/* Typography tweaks */
+h3.fw-bold {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
+h5.fw-bold {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+h1, h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+}
+
+/* Account details rows */
+.card-body .d-flex {
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.card-body .d-flex:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Responsive spacing */
+
+@media (min-width: 769px) {
+  .card-body img.rounded-circle {
+    width: 55px;
+    height: 55px;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1rem;
+  }
+  h3.fw-bold {
+    font-size: 1.25rem;
+  }
+  h1, h2 {
+    font-size: 1.5rem;
+  }
+  .card-body img.rounded-circle {
+    width: 45px;
+    height: 45px;
+  }
+
+  /* Adjust header text size */
+  h3.fw-bold {
+    font-size: 1.2rem;
+  }
+  p.text-muted {
+    font-size: 0.9rem;
+  }
+
+}

@@ -1,0 +1,128 @@
+{% extends "child_base.html" %}
+{% block content %}
+
+<div class="container-fluid px-3 px-md-4 py-4">
+
+  <!-- PROFILE HEADER -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+      <div>
+        <h3 class="fw-bold mb-1">My Profile</h3>
+        <p class="text-muted mb-0">Welcome back, {{ request.user.username }} 👋</p>
+      </div>
+      <div class="d-flex align-items-center gap-3 mt-3 mt-md-0">
+        <img src="https://ui-avatars.com/api/?name={{request.user.username}}&background=0D6EFD&color=fff"
+             class="rounded-circle shadow-sm border border-2 border-light"
+             width="60" height="60" alt="Avatar">
+        <span class="badge bg-primary rounded-pill px-3 py-2 d-none d-md-inline">Child Account</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE INFO + MONTHLY SPENDING -->
+  <div class="row g-4">
+    <!-- ACCOUNT DETAILS -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm rounded-4 h-100 hover-card">
+        <div class="card-body">
+          <h5 class="fw-bold mb-4 text-dark">Account Details</h5>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <small class="text-muted">Username</small>
+            <span class="fw-semibold text-dark">{{ request.user.username }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <small class="text-muted">Account Type</small>
+            <span class="fw-semibold text-dark">Child</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">Joined</small>
+            <span class="fw-semibold text-dark">{{ request.user.date_joined|date:"F d, Y" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONTHLY TOTAL -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm rounded-4 h-100 bg-gradient bg-success text-white hover-card">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
+          <h6 class="mb-2 fw-medium">This Month's Spending</h6>
+          <h1 class="fw-bold mb-2">₦{{ monthly_spending }}</h1>
+          <p class="mb-0 small opacity-75">Total debit transactions this month</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPENDING TREND CHART -->
+  <div class="card border-0 shadow-sm rounded-4 mt-4 hover-card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-dark mb-0">Spending Trend</h5>
+        <!-- Toggle buttons -->
+        <div class="btn-group btn-group-sm" role="group">
+          <button class="btn btn-outline-primary" onclick="updateChart('daily')">Daily</button>
+          <button class="btn btn-outline-primary" onclick="updateChart('weekly')">Weekly</button>
+        </div>
+      </div>
+      <canvas id="spendingChart" height="120"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const dailyLabels = {{ daily_labels|safe }};
+  const dailyData = {{ daily_data|safe }};
+  const weeklyLabels = {{ weekly_labels|safe }};
+  const weeklyData = {{ weekly_data|safe }};
+
+  const ctx = document.getElementById('spendingChart').getContext('2d');
+
+  // Gradient for line fill
+  const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+  gradient.addColorStop(0, 'rgba(13,110,253,0.8)');
+  gradient.addColorStop(1, 'rgba(13,110,253,0.1)');
+
+  let spendingChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dailyLabels,
+      datasets: [{
+        label: 'Spending ₦',
+        data: dailyData,
+        fill: true,
+        backgroundColor: gradient,
+        borderColor: '#0d6efd',
+        borderWidth: 2,
+        tension: 0.4,
+        pointBackgroundColor: '#0d6efd',
+        pointRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        y: { beginAtZero: true },
+        x: {}
+      }
+    }
+  });
+
+  function updateChart(mode) {
+    if (mode === 'daily') {
+      spendingChart.data.labels = dailyLabels;
+      spendingChart.data.datasets[0].data = dailyData;
+    } else {
+      spendingChart.data.labels = weeklyLabels;
+      spendingChart.data.datasets[0].data = weeklyData;
+    }
+    spendingChart.update();
+  }
+</script>
+
+{% endblock %}

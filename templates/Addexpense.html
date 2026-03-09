@@ -1,0 +1,106 @@
+{% extends "child_base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+  <!-- SUCCESS POPUP -->
+  {% if messages %}
+  <div class="position-fixed top-0 end-0 p-3" style="z-index:1055;">
+    {% for message in messages %}
+    <div id="successToast" class="toast align-items-center text-bg-success border-0 show">
+
+      <div class="d-flex">
+
+        <div class="toast-body">
+          <i class="fa fa-check-circle me-2"></i>
+          {{ message }}
+        </div>
+
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="row justify-content-center">
+
+    <div class="col-md-8 col-lg-6">
+
+      <div class="card shadow-sm border-0 rounded-4">
+
+        <div class="card-body p-5">
+
+          <h4 class="fw-semibold mb-4 text-center">
+            <i class="fa fa-plus-circle me-2 text-primary"></i>
+            Add Expense
+          </h4>
+
+          <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Category</label>
+              {{ form.category }}
+            </div>
+
+            <!-- Hidden other category -->
+            <div class="mb-3 d-none" id="otherField">
+              <label class="form-label fw-semibold">Other Expense</label>
+              {{ form.other_category }}
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Amount (₦)</label>
+              {{ form.amount }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2">
+              <i class="fa fa-check me-2"></i>
+              Save Expense
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const categorySelect = document.getElementById("categorySelect");
+const otherField = document.getElementById("otherField");
+
+categorySelect.addEventListener("change", function(){
+
+    if(this.value === "Other"){
+        otherField.classList.remove("d-none");
+    } else {
+        otherField.classList.add("d-none");
+    }
+
+});
+
+// AUTO CLOSE TOAST
+setTimeout(() => {
+
+    const toast = document.getElementById("successToast");
+
+    if(toast){
+        toast.classList.remove("show");
+    }
+
+}, 4000);
+
+</script>
+
+{% endblock %}
