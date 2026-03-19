@@ -1,16 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-from django.db.models.functions import TruncMonth
-from django.contrib.auth import get_user_model
-from .models import Transaction, ChildAccount
+from django.db import transaction as db_transaction
+from django.db.models.functions import TruncMonth, TruncDay
+from django.contrib.auth import get_user_model, authenticate, login
 from django.utils import timezone
 from datetime import timedelta
-from django.contrib.auth import authenticate, login
-from django.db.models.functions import TruncDay
 from django.contrib import messages
-from .forms import ChildExpenseForm
 from django.core.paginator import Paginator
+from decimal import Decimal
+from .models import Transaction, ChildAccount
+from .models import CustomUser
+from .forms import ChildExpenseForm
+
 
 # ------------------------
 # HOME
@@ -20,71 +22,44 @@ def home(request):
 
 
 # ------------------------
-# DASHBOARD
+# DASHBOARD ROUTER
 # ------------------------
 @login_required
 def dashboard(request):
-    # Transactions for all children of the parent
-    transactions = Transaction.objects.filter(child__parent=request.user)
-    spending = transactions.filter(transaction_type='debit')
 
-    now = timezone.now()
+    if request.user.role == "parent":
+        return redirect("mychildren")
 
-    # ------------------------
-    # PIE CHART (current month)
-    # ------------------------
-    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    current_month_spending = spending.filter(date__gte=month_start)
-
-    category_data = current_month_spending.values('category').annotate(total=Sum('amount'))
-    categories = [item['category'] for item in category_data]
-    category_totals = [float(item['total']) for item in category_data]
-
-    # ------------------------
-    # BAR CHART (last 6 months)
-    # ------------------------
-    six_months_ago = now - timedelta(days=180)
-    monthly_data = spending.filter(date__gte=six_months_ago).annotate(month=TruncMonth('date')).values('month').annotate(total=Sum('amount')).order_by('month')
-    months = [item['month'].strftime('%b %Y') for item in monthly_data]
-    monthly_totals = [float(item['total']) for item in monthly_data]
-
-    # Recent transactions
-    recent_transactions = transactions.order_by('-date')[:3]
-
-    context = {
-        'categories': categories,
-        'category_totals': category_totals,
-        'months': months,
-        'monthly_totals': monthly_totals,
-        'recent_transactions': recent_transactions,
-    }
-
-    return render(request, "dashboard.html", context)
+    if request.user.role == "child":
+        return redirect("childrendashboard")
 
 
-
-# ALL TRANSACTIONS
+# ------------------------
+# MY CHILDREN (PARENT MAIN PAGE)
 # ------------------------
 @login_required
-def all_transactions(request):
-    transactions = Transaction.objects.filter(child__parent=request.user).order_by('-date')
-    return render(request, "all_transactions.html", {"transactions": transactions})
-
-
-
-# MY CHILDREN
-@login_required
 def mychildren(request):
+
+    if request.user.role != "parent":
+        return redirect("childrendashboard")
+
     User = get_user_model()
-    children = User.objects.filter(parent=request.user, role='child')
+    children = User.objects.filter(parent=request.user, role="child")
 
     children_data = []
-    for child in children:
-        transactions = Transaction.objects.filter(child=child)
-        total_spent = transactions.filter(transaction_type='debit').aggregate(total=Sum('amount'))['total'] or 0
 
-        # Get allowance from ChildAccount if exists
-        allowance = getattr(getattr(child, 'account', None), 'allowance', 50000)
+    for child in children:
+
+        transactions = Transaction.objects.filter(child=child)
+
+        total_spent = transactions.filter(
+            transaction_type="debit"
+        ).aggregate(total=Sum("amount"))["total"] or 0
+
+        account = getattr(child, "account", None)
+
+        allowance = account.allowance if account else 0
+
         balance = allowance - total_spent
 
         percentage_used = (total_spent / allowance) * 100 if allowance > 0 else 0
@@ -100,23 +75,27 @@ def mychildren(request):
     return render(request, "mychildren.html", {"children": children_data})
 
 
-
+# ------------------------
 # ADD CHILD
+# ------------------------
 @login_required
 def Addchild(request):
+
+    if request.user.role != "parent":
+        return redirect("childrendashboard")
+
     User = get_user_model()
 
     if request.method == "POST":
+
         full_name = request.POST.get("full_name")
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        # Check if username already exists
         if User.objects.filter(username=username).exists():
             error = "This username is already taken. Please choose another."
             return render(request, "Addchild.html", {"error": error})
 
-        # Create child user
         child = User.objects.create_user(
             username=username,
             password=password,
@@ -124,18 +103,51 @@ def Addchild(request):
             parent=request.user
         )
 
-        child.first_name = full_name
+        child.first_name = full_name.title()
         child.save()
 
-        # Create child account
-        ChildAccount.objects.create(child=child, allowance=50000)
+        # Child wallet starts at ₦0
+        ChildAccount.objects.create(child=child)
 
         return redirect("mychildren")
 
     return render(request, "Addchild.html")
 
-User = get_user_model()
+
+@login_required
+def reset_child_password(request, child_id):
+
+    child = get_object_or_404(CustomUser, id=child_id, parent=request.user)
+
+    if request.method == "POST":
+
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
+
+        if password1 != password2:
+            messages.error(request, "Passwords do not match")
+
+        else:
+            child.set_password(password1)
+            child.save()
+
+            messages.success(request, "Child password reset successfully")
+
+            return redirect("children_list")
+
+    return render(request, "reset_child_password.html", {"child": child})
+
+# ------------------------
+# CHILD DETAIL
+# ------------------------
+@login_required
 def child_detail(request, child_id):
+
+    if request.user.role != "parent":
+        return redirect("childrendashboard")
+
+    User = get_user_model()
+
     child = get_object_or_404(User, id=child_id, parent=request.user)
 
     context = {
@@ -145,42 +157,83 @@ def child_detail(request, child_id):
     return render(request, "child_detail.html", context)
 
 
+# ------------------------
+# FUND WALLET
+# ------------------------
+
+
+
 @login_required
 def Fundwallet(request):
-
     if request.user.role != "parent":
-        return redirect("dashboard")
+        return redirect("childrendashboard")
 
     User = get_user_model()
     children = User.objects.filter(parent=request.user, role="child")
 
     if request.method == "POST":
         child_id = request.POST.get("child")
-        amount = request.POST.get("amount")
+        amount_str = request.POST.get("amount")
+
+        # Convert amount safely to Decimal
+        try:
+            amount = Decimal(amount_str)
+        except Exception:
+            messages.error(request, "Invalid amount entered.")
+            return redirect("Fundwallet")
 
         child = get_object_or_404(User, id=child_id, parent=request.user)
 
-        # Create credit transaction
+        # Add credit transaction
         Transaction.objects.create(
             child=child,
             category="Allowance",
-            amount=amount,
+            amount=amount,  # store as Decimal
             transaction_type="credit"
         )
 
-        messages.success(request, "Wallet funded successfully!")
+        # Update allowance
+        account = child.account
+        account.allowance += amount  # both are Decimal now
+        account.save()
 
-        return redirect("dashboard")
+        messages.success(request, "Wallet funded successfully!")
+        return redirect("mychildren")
 
     return render(request, "Fundwallet.html", {"children": children})
 
 
-# this is where child views start
+
+
+
+@login_required
+def reset_child_password(request, child_id):
+    if request.user.role != "parent":
+        return redirect("childrendashboard")
+
+    User = get_user_model()
+    child = get_object_or_404(User, id=child_id, parent=request.user)
+
+    if request.method == "POST":
+        new_password = request.POST.get("new_password")
+        if new_password:
+            child.set_password(new_password)
+            child.save()
+            messages.success(request, f"Password for {child.first_name} has been reset.")
+        else:
+            messages.error(request, "Password cannot be empty.")
+
+    return redirect("Addchild")
+
+# ======================================================
+# CHILD SIDE
+# ======================================================
 
 # ------------------------
 # CHILD LOGIN
 # ------------------------
 def child_login(request):
+
     if request.method == "POST":
 
         username = request.POST.get("username")
@@ -198,51 +251,50 @@ def child_login(request):
     return render(request, "child_login.html")
 
 
+# ------------------------
+# CHILD DASHBOARD
+# ------------------------
 @login_required
-def childrendashboard(request):
+def childrendashboard(request, child_id=None):
 
-    if request.user.role != "child":
-        return redirect("dashboard")
+    # CHILD VIEWING THEIR OWN DASHBOARD
+    if request.user.role == "child":
+        child = request.user
+        readonly = False
 
-    child = request.user
+    # PARENT VIEWING CHILD DASHBOARD
+    else:
+        if not child_id:
+            return redirect("mychildren")
 
-    # -------------------------
-    # CHILD TRANSACTIONS
-    # -------------------------
+        User = get_user_model()
+        child = User.objects.get(id=child_id, parent=request.user)
+        readonly = True
+
+
     transactions = Transaction.objects.filter(child=child)
 
-    # -------------------------
-    # TOTAL SPENT
-    # -------------------------
     total_spent = transactions.filter(
         transaction_type="debit"
     ).aggregate(Sum("amount"))["amount__sum"] or 0
 
-    # -------------------------
-    # ACCOUNT INFO
-    # -------------------------
-    allowance = child.transactions.filter(
-    transaction_type="credit"
+    allowance = transactions.filter(
+        transaction_type="credit"
     ).aggregate(Sum("amount"))["amount__sum"] or 0
+
     balance = allowance - total_spent
 
-    # -------------------------
-    # RECENT TRANSACTIONS
-    # -------------------------
     recent_transactions = transactions.order_by("-date")[:5]
 
-    # -------------------------
-    # LINE CHART DATA (LAST 7 DAYS)
-    # -------------------------
+    # CHART DATA
     today = timezone.now().date()
     day_objects = [today - timedelta(days=i) for i in range(6, -1, -1)]
-    days = [(day).strftime("%a") for day in day_objects]  # labels for Chart.js
+    days = [(day).strftime("%a") for day in day_objects]
 
-    # Get spending grouped by day & category
     weekly_data = (
         transactions.filter(
             transaction_type="debit",
-            date__date__gte=day_objects[0]  # 7 days ago
+            date__date__gte=day_objects[0]
         )
         .annotate(day=TruncDay("date"))
         .values("day", "category")
@@ -250,9 +302,10 @@ def childrendashboard(request):
         .order_by("day")
     )
 
-    # Build a dictionary of category -> day -> amount
     datasets_dict = {}
+
     for item in weekly_data:
+
         category = str(item["category"])
         day = item["day"].date()
         total = float(item["total"])
@@ -262,14 +315,14 @@ def childrendashboard(request):
 
         datasets_dict[category][day] = total
 
-    # If there’s no data at all, create a default "No Spending" dataset
     if not datasets_dict:
         datasets_dict["No Spending"] = {d: 0 for d in day_objects}
 
-    # Build the final datasets list for Chart.js
     datasets = []
+
     for category, values in datasets_dict.items():
         data_ordered = [values[day] for day in day_objects]
+
         datasets.append({
             "label": category,
             "data": data_ordered
@@ -283,26 +336,31 @@ def childrendashboard(request):
         "recent_transactions": recent_transactions,
         "chart_days": days,
         "chart_datasets": datasets,
+        "readonly": readonly
     }
 
     return render(request, "childrendashboard.html", context)
 
 
+# ------------------------
+# ADD EXPENSE
+# ------------------------
 @login_required
 def Addexpense(request):
 
     if request.user.role != "child":
-        return redirect("dashboard")
+        return redirect("mychildren")
 
     if request.method == "POST":
+
         form = ChildExpenseForm(request.POST)
 
         if form.is_valid():
+
             expense = form.save(commit=False)
             expense.child = request.user
             expense.transaction_type = "debit"
 
-            # handle other category
             other_category = request.POST.get("other_category")
 
             if expense.category == "Other" and other_category:
@@ -320,13 +378,14 @@ def Addexpense(request):
     return render(request, "Addexpense.html", {"form": form})
 
 
-
-
+# ------------------------
+# CHILD TRANSACTIONS
+# ------------------------
 @login_required
 def Mytransactions(request):
 
     if request.user.role != "child":
-        return redirect("dashboard")
+        return redirect("mychildren")
 
     child = request.user
 
@@ -334,15 +393,12 @@ def Mytransactions(request):
         child=child
     ).order_by("-date")
 
-    # GET FILTER VALUES
     category = request.GET.get("category")
     date_filter = request.GET.get("date")
 
-    # CATEGORY FILTER
     if category:
         transactions = transactions.filter(category=category)
 
-    # DATE FILTER
     if date_filter == "today":
         transactions = transactions.filter(date__date=timezone.now().date())
 
@@ -354,12 +410,12 @@ def Mytransactions(request):
         month_ago = timezone.now() - timedelta(days=30)
         transactions = transactions.filter(date__gte=month_ago)
 
-    # PAGINATION
-    paginator = Paginator(transactions, 10)  # 10 transactions per page
+    paginator = Paginator(transactions, 10)
+
     page_number = request.GET.get("page")
+
     page_obj = paginator.get_page(page_number)
 
-    # GET UNIQUE CATEGORIES
     categories = Transaction.objects.filter(
         child=child
     ).values_list("category", flat=True).distinct()
@@ -374,13 +430,17 @@ def Mytransactions(request):
     return render(request, "Mytransactions.html", context)
 
 
-
-
+# ------------------------
+# CHILD PROFILE
+# ------------------------
 @login_required
 def Childprofile(request):
+
+    if request.user.role != "child":
+        return redirect("mychildren")
+
     now = timezone.now()
 
-    # All debit transactions this month
     transactions = Transaction.objects.filter(
         child=request.user,
         transaction_type="debit",
@@ -388,17 +448,15 @@ def Childprofile(request):
         date__year=now.year
     ).order_by("date")
 
-    # Daily points (each transaction amount)
     daily_labels = [tx.date.strftime("%d %b") for tx in transactions]
     daily_data = [float(tx.amount) for tx in transactions]
 
-    # Weekly points (sum per week, but keep each week as its own point)
     weekly_spending = {}
+
     for tx in transactions:
         week_label = f"Week {tx.date.isocalendar()[1]}"
         weekly_spending[week_label] = weekly_spending.get(week_label, 0) + float(tx.amount)
 
-    # Sort weeks so they appear in order
     weekly_labels = sorted(weekly_spending.keys(), key=lambda w: int(w.split()[1]))
     weekly_data = [weekly_spending[w] for w in weekly_labels]
 
@@ -409,4 +467,5 @@ def Childprofile(request):
         "weekly_labels": weekly_labels,
         "weekly_data": weekly_data,
     }
+
     return render(request, "Childprofile.html", context)

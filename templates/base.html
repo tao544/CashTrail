@@ -21,64 +21,47 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@400;600&display=swap" />
   </head>
-  <body class="d-flex flex-column min-vh-10">
+  <body class="d-flex flex-column min-vh-100">
 
-    <!-- Navbar -->
-     {% if not request.path|slice:":10" == "/dashboard" %}
-      {% block page_navbar %}
-      <nav class="navbar navbar-expand-lg navbar-dark"
-         style="background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);">
-      <div class="container-fluid">
-        <a class="navbar-brand ms-4" href="#">
-          <img height="60px" src="{% static 'image/cashtrail-darklogo.png' %}" />
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav"
-                aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+{% if not request.user.is_authenticated %}
+  {% block page_navbar %}
+  <nav class="navbar navbar-expand-lg navbar-dark"
+       style="background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);">
+    <div class="container-fluid">
+      <a class="navbar-brand ms-4" href="#">
+        <img height="60px" src="{% static 'image/cashtrail-darklogo.png' %}" />
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarNav" aria-controls="navbarNav"
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <div class="collapse navbar-collapse justify-content-end me-4" id="navbarNav">
-          <div class="navbar-nav fs-5 me-3">
-            {% comment %} <a class="nav-link active me-4 text-primary" href="#">Home</a> {% endcomment %}
-          </div>
-
-          {% if request.user.is_authenticated %}
-            <span class="me-3 text-light fw-semibold">{{ request.user.email }}</span>
-            {% if request.user.role == "parent" %}
-              {% comment %} <a href="{% url 'dashboard' %}" class="btn btn-outline-light me-2">Parent Dashboard</a> {% endcomment %}
-            {% elif request.user.role == "child" %}
-              <a href="{% url 'childrendashboard' %}" class="btn btn-outline-light me-2">My Dashboard</a>
-            {% endif %}
-            <a href="{% url 'account_logout' %}" class="btn btn-primary btn-sm">Logout</a>
-          {% else %}
-            <a href="{% provider_login_url 'google' %}" class="btn btn-primary me-2">Parent Login</a>
-            <a href="{% url 'child_login' %}" class="btn btn-outline-light">Child Login</a>
-          {% endif %}
-        </div>
+      <div class="collapse navbar-collapse justify-content-end me-4" id="navbarNav">
+        <a href="{% provider_login_url 'google' %}" class="btn btn-primary me-2">Parent Login</a>
+        <a href="{% url 'child_login' %}" class="btn btn-outline-light">Child Login</a>
       </div>
-    </nav>
-      {% endblock %}
-      {% endif %}
+    </div>
+  </nav>
+  {% endblock %}
+{% endif %}
 
-    
     <!-- Background -->
     
+    <main class="flex-grow-1">
+
     {% block page_background %}{% endblock %}
 
-    <!-- Main content -->
-<main class="flex-grow-1 overflow-hidden">
-  <div class="h-100">
-      <div class="row">
-    {% block sidebar %}{% endblock %}
-    <div class="col main-content">
+
+
+     <!-- Main Content -->
+    <div class="flex-grow-1 main-content p-0">
       {% block content %}{% endblock %}
     </div>
-  </div>
-  </div>
 
 </main>
 
+    
 
 
     <!-- Footer -->
