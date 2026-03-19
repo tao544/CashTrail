@@ -1,1 +1,1 @@
-web: gunicorn cashtrail.wsgi
+web: gunicorn Cashtrail.wsgi
