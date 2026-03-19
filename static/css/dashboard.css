@@ -135,7 +135,49 @@ justify-content:center;
 margin:auto;
 }
 
+/* reset password */
+.form-control:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
 
+.input-group-text i {
+  margin: auto;
+}
+
+.custom-input {
+  background: #f9f7f7!important;
+  border-radius: 10px;
+  padding: 0 10px;
+}
+
+.custom-input input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 12px 10px;
+}
+
+.custom-input input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Toggle perfectly centered */
+.toggle-password {
+  cursor: pointer!important;
+  user-select: none!important;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  z-index: 2;
+  background-color: #fff;
+}
+.toggle-password:hover {
+  opacity: 0.8;
+}
 
 
 

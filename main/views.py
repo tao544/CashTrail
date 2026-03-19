@@ -18,6 +18,11 @@ from .forms import ChildExpenseForm
 # HOME
 # ------------------------
 def home(request):
+    if request.user.is_authenticated:
+        if request.user.role == "parent":
+            return redirect("mychildren")
+        elif request.user.role == "child":
+            return redirect("children")
     return render(request, "index.html")
 
 
@@ -133,7 +138,7 @@ def reset_child_password(request, child_id):
 
             messages.success(request, "Child password reset successfully")
 
-            return redirect("children_list")
+            return redirect("mychildren")
 
     return render(request, "reset_child_password.html", {"child": child})
 
@@ -203,27 +208,6 @@ def Fundwallet(request):
     return render(request, "Fundwallet.html", {"children": children})
 
 
-
-
-
-@login_required
-def reset_child_password(request, child_id):
-    if request.user.role != "parent":
-        return redirect("childrendashboard")
-
-    User = get_user_model()
-    child = get_object_or_404(User, id=child_id, parent=request.user)
-
-    if request.method == "POST":
-        new_password = request.POST.get("new_password")
-        if new_password:
-            child.set_password(new_password)
-            child.save()
-            messages.success(request, f"Password for {child.first_name} has been reset.")
-        else:
-            messages.error(request, "Password cannot be empty.")
-
-    return redirect("Addchild")
 
 # ======================================================
 # CHILD SIDE
