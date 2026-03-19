@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-hy*r3gnf!&26a=p(%85$b&5a=&79&j&%!+c56!n7xw6=*fv%d5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['cashtrail.onrender.com']
 
 
 # Application definition
