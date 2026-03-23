@@ -37,11 +37,11 @@
     <ul class="nav nav-pills flex-column gap-2">
       <li><a class="nav-link text-light" href="{% url 'mychildren' %}"><i class="fas fa-users me-2"></i> My Children</a></li>
       <li><a class="nav-link text-light" href="{% url 'Fundwallet' %}"><i class="fas fa-wallet me-2"></i> Fund Wallet</a></li>
-      <li><a class="nav-link text-light" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+      {% comment %} <li><a class="nav-link text-light" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li> {% endcomment %}
     </ul>
     <hr class="sidebar-divider">
 
-    <a class="nav-link text-danger mt-4 logout" href="{% url 'account_logout' %}">
+    <a class="nav-link text-danger mt-3 logout " href="{% url 'account_logout' %}">
       <i class="fas fa-sign-out-alt me-2"></i> Logout
     </a>
   </div>
