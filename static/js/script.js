@@ -63,3 +63,40 @@ function togglePassword() {
         passwordIcon.classList.add('bi-eye');
     }
 }
+
+
+
+
+// navbar js
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const navLinks = document.querySelectorAll(".nav-scroll");
+  const indicator = document.querySelector(".nav-indicator");
+
+  function moveIndicator(el) {
+    if (!el || window.innerWidth <= 991) return;
+
+    const rect = el.getBoundingClientRect();
+    const parentRect = el.closest(".navbar-nav").getBoundingClientRect();
+
+    indicator.style.width = rect.width + "px";
+    indicator.style.left = (rect.left - parentRect.left) + "px";
+  }
+
+  navLinks.forEach(link => {
+    link.addEventListener("click", function () {
+      navLinks.forEach(l => l.classList.remove("active"));
+      this.classList.add("active");
+      moveIndicator(this);
+    });
+  });
+
+  // Set default on load
+  const active = document.querySelector(".nav-link.active");
+  moveIndicator(active);
+
+});
+
+
+

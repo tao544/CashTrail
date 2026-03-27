@@ -16,12 +16,12 @@
 {% comment %} nav {% endcomment %}
 <div class="hero-section d-flex align-items-center text-center text-white">
     <div class="container ">
-        <h1 class="display-3 fw-bold mb-4 hero-heading">Track. Guide. Grow</h1>
+        <h1 class="display-3 fw-bold mb-4 hero-heading"><span class="text-primary">Track.</span> Guide <span class="text-success">.Grow</span></h1>
         <p class="lead fs-5 mb-4 mx-auto hero-subtext">
           A smart financial management platform that helps parents monitor spending while empowering children to build responsible money habits with confidence.        
         </p>
         <div class="d-flex justify-content-center">
-          <button class="btn btn-primary px-4"><i class="bi bi-google"></i><a href="{% provider_login_url 'google' %}" class="landcon">Continue with google</a></button>
+          <button class="btn btn-primary px-4"><i class="bi bi-google"></i><a href="{% provider_login_url 'google' %}" class="landcon hero-cta">Continue with Google</a></button>
         </div>
     </div>
 </div>
@@ -156,7 +156,7 @@
 {% comment %} features {% endcomment %}
 
 <!-- Features Section -->
-<section class="py-5" style="background-color: #f1f3f5;">
+{% comment %} <section class="py-5" style="background-color: #f1f3f5;">
     <div class="container">
 
         <!-- Section Header -->
@@ -167,113 +167,177 @@
             </p>
         </div>
 
-        <div class="row g-4">
+<div class="row g-4 justify-content-center">
 
-            <!-- Feature 1 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100 p-4 text-center">
-                    <i class="bi bi-wallet2 display-6 mb-3 text-primary fs-3"></i>
-                    <h5 class="fw-semibold featcard">Expense Management</h5>
-                    <p class="text-muted mb-0 featp">
-                        Easily record and categorize income and expenses to maintain accurate financial records and improve spending awareness.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Feature 2 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100 p-4 text-center">
-                    <i class="bi bi-bar-chart-line display-6 mb-3 text-primary fs-3"></i>
-                    <h5 class="fw-semibold featcard">Financial Insights</h5>
-                    <p class="text-muted mb-0 featp">
-                        Access structured summaries and analytics to understand spending trends and support informed financial decisions.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Feature 3 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100 p-4 text-center">
-                    <i class="bi bi-shield-lock display-6 mb-3 text-primary fs-3"></i>
-                    <h5 class="fw-semibold featcard">Secure Authentication</h5>
-                    <p class="text-muted mb-0 featp">
-                        Protect your account with secure Google authentication and industry-standard security practices.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Feature 4 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100 p-4 text-center">
-                    <i class="bi bi-clock-history display-6 mb-3 text-primary fs-3"></i>
-                    <h5 class="fw-semibold featcard">Transaction Records</h5>
-                    <p class="text-muted mb-0 featp">
-                        Maintain a complete and organized history of transactions for transparency and accountability.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Feature 5 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100 p-4 text-center">
-                    <i class="bi bi-bullseye display-6 mb-3 text-primary fs-3"></i>
-                    <h5 class="fw-semibold featcard">Budget Planning</h5>
-                    <p class="text-muted mb-0 featp">
-                        Set structured monthly budgets and monitor performance against financial goals.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Feature 6 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100 p-4 text-center">
-                    <i class="bi bi-cloud-arrow-up display-6 mb-3 text-primary fs-3"></i>
-                    <h5 class="fw-semibold featcard">Cloud Accessibility</h5>
-                    <p class="text-muted mb-0 featp">
-                        Securely access your financial data anytime and from any device.
-                    </p>
-                </div>
-            </div>
-
-        </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card border-0 shadow-sm h-100 p-4 text-center">
+      <i class="bi bi-wallet2 fs-3 text-primary"></i>
+      <h5 class="fw-semibold featcard">Expense Tracking</h5>
+      <p class="featp">Record and manage all transactions easily.</p>
     </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3">
+    <div class="card border-0 shadow-sm h-100 p-4 text-center">
+      <i class="bi bi-graph-up-arrow fs-3 text-primary"></i>
+      <h5 class="fw-semibold featcard">Real-time Monitoring</h5>
+      <p class="featp">Instant updates on balances and spending.</p>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3">
+    <div class="card border-0 shadow-sm h-100 p-4 text-center">
+      <i class="bi bi-shield-lock fs-3 text-primary"></i>
+      <h5 class="fw-semibold featcard">Secure Access</h5>
+      <p class="featp">Safe and reliable authentication system.</p>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3">
+    <div class="card border-0 shadow-sm h-100 p-4 text-center">
+      <i class="bi bi-card-checklist fs-3 text-primary"></i>
+      <h5 class="fw-semibold featcard">Transaction History</h5>
+      <p class="featp">Organized records for transparency.</p>
+    </div>
+  </div>
+
+</div>
+    </div>
+</section> {% endcomment %}
+
+
+
+
+<section id="faq" class="py-5" style="background-color: #12181f;">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Frequently Asked Questions</h2>
+      <p class="text-light mt-4">
+        Everything you need to know about how CashTrail works.
+      </p>
+    </div>
+
+    <div class="accordion custom-accordion" id="faqAccordion">
+
+      <!-- Item 1 -->
+      <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+            How does CashTrail help parents monitor spending?
+          </button>
+        </h2>
+        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            CashTrail provides real-time tracking of children's transactions, allowing parents to monitor spending patterns and wallet balances instantly.
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+            Is the system secure?
+          </button>
+        </h2>
+        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            Yes, CashTrail uses secure authentication methods and protected data handling to ensure user information remains safe.
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+            Can children track their own expenses?
+          </button>
+        </h2>
+        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            Yes, children can view and manage their own transactions, helping them develop responsible financial habits.
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+            Does CashTrail store transaction history?
+          </button>
+        </h2>
+        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            All transactions are stored and organized for better financial planning.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </section>
 {% endblock %}
 {% block page_footer %}
 <footer class="pt-5 pb-3 mt-auto" style="background-color: #1f2933; color: #ffffff">
-      <div class="container">
-        <div class="row align-items-start">
-          <div class="col-lg-4 mb-4">
-            <img src="{% static 'image/cashtrail-darklogo.png' %}" height="70px" alt="CashTrail Logo" />
-            <p class="text-light mt-3">
-              A structured financial management platform designed to support
-              students, families, and businesses with clarity, security, and control.
-            </p>
-          </div>
-          <div class="col-lg-3 col-md-4 mb-3 mx-3 servicefoot">
-            <h6 class="fw-bold mb-3">Our Services</h6>
-            <ul class="list-unstyled">
-              <li class="text-light">Expense Tracking</li>
-              <li class="text-light">Budget Planning</li>
-              <li class="text-light">Financial Reports</li>
-              <li class="text-light">Secure Authentication</li>
-            </ul>
-          </div>
-          <div class="col-lg-3 col-md-4 mb-4 contactse mb-">
-            <h6 class="fw-semibold fs-5 mb-3">Contact</h6>
-            <p class="text-light mb-1">Email: support@cashtrail.com</p>
-            <p class="text-light mb-1">Phone: +234 000 000 0000</p>
-            <p class="text-light">Location: Nigeria</p>
-          </div>
-        </div>
-        <hr class="border-light" />
-        <div class="text-center">
-          <p class="mb-0 text-light foots">
-            &copy; <script>document.write(new Date().getFullYear());</script>
-            <span style="font-weight: bold; color: blue">CashTrail.</span> All rights reserved.
-          </p>
-        </div>
+  <div class="container">
+
+    <div class="row gy-4">
+
+      <!-- LOGO + ABOUT -->
+      <div class="col-lg-4 col-md-6">
+        <img src="{% static 'image/cashtrail-darklogo.png' %}" height="65px" />
+        <p class="text-light mt-3">
+          A structured financial management platform designed to support
+          students, families, and businesses with clarity, security, and control.
+        </p>
       </div>
-    </footer>
+
+      <!-- QUICK LINKS -->
+      <div class="col-lg-2 col-md-6">
+        <h6 class="fw-bold mb-3">Quick Links</h6>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'home' %}#about" class="footer-link">About</a></li>
+          <li><a href="{% url 'home' %}#how-it-works" class="footer-link">How It Works</a></li>
+          <li><a href="{% url 'home' %}#faq" class="footer-link">FAQ</a></li>
+          <li><a href="{% url 'support' %}" class="footer-link">Support</a></li>
+        </ul>
+      </div>
+
+      <!-- SERVICES -->
+      <div class="col-lg-3 col-md-6">
+        <h6 class="fw-bold mb-3">Our Services</h6>
+        <ul class="list-unstyled text-light">
+          <li>Expense Tracking</li>
+          <li>Budget Planning</li>
+          <li>Financial Reports</li>
+          <li>Secure Authentication</li>
+        </ul>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="col-lg-3 col-md-6">
+        <h6 class="fw-bold mb-3">Contact</h6>
+        <p class="mb-1">Email: support@cashtrail.com</p>
+        <p class="mb-1">Phone: +234 000 000 0000</p>
+        <p>Location: Nigeria</p>
+      </div>
+
+    </div>
+
+    <hr class="border-light mt-4" />
+
+    <div class="text-center">
+      <p class="mb-0 foots">
+        &copy; <script>document.write(new Date().getFullYear());</script>
+        <span style="font-weight: bold; color: #0d6efd">CashTrail</span>. All rights reserved.
+      </p>
+    </div>
+
+  </div>
+</footer>
 </div>
 {% endblock %}

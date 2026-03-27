@@ -12,6 +12,37 @@
     src: url("{% static 'fonts/Poppins-Regular.ttf' %}");
 }
 
+/* Default (transparent dark) */
+.custom-navbar {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+}
+
+/* When scrolled */
+.custom-navbar.scrolled {
+    background: #0d1b2a; /* deep fintech blue */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Nav links */
+.nav-link {
+    color: #f1f3f5 !important;
+    margin: 0 10px;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: #0d6efd !important;
+}
+
+/* Dropdown */
+.dropdown-menu {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
 .main-content{
     width: 100%;
 }

@@ -1,6 +1,6 @@
 from django import forms
 from .models import Transaction
-
+from .models import SupportMessage
 CATEGORY_CHOICES = [
     ("Food", "🍔 Food"),
     ("Transport", "🚗 Transport"),
@@ -39,3 +39,10 @@ class ChildExpenseForm(forms.ModelForm):
                 "placeholder": "Enter amount"
             })
         }
+
+
+
+class SupportForm(forms.ModelForm):
+    class Meta:
+        model= SupportMessage
+        fields= ['name', 'email', 'message']       

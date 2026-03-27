@@ -1,0 +1,123 @@
+{% extends "base.html" %} {% load static %} {% block title %}Support{% endblock%} {% block content %}
+<section class="support py-5 bg-light">
+  <div class="container">
+    <!-- Header -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">How can we help you?</h2>
+      <p class="text-muted">
+        Experiencing an issue or have a question? Our support team is here to
+        guide you every step of the way.
+      </p>
+    </div>
+
+    <div class="row g-4 align-items-stretch">
+      <!-- LEFT: Contact Info -->
+      <div class="col-lg-6">
+        <div class="card support-info p-4 border-0 rounded-4 h-100">
+          <h5 class="mb-3">Support Information</h5>
+
+          <p class="text-muted">
+            We’re committed to making your experience with CashTrail smooth and
+            stress-free. Reach out to us anytime and we’ll assist you as quickly
+            as possible.
+          </p>
+
+          <div class="support-item d-flex align-items-start mb-3">
+            <div class="links">
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=adeedraiment@gmail.com" target="_blank" class="email">
+                    <i class="bi bi-envelope fs-4 me-3 text-danger "></i>
+                </a>
+            </div>
+            
+            
+            <div>
+              <strong>Email Support</strong>
+              <p class="mb-0 text-muted">support@cashtrail.com</p>
+            </div>
+          </div>
+
+          <div class="support-item d-flex align-items-start mb-3">
+            <div class="links">
+                <a href="tel:+234XXXXXXXXXX" class="phone">
+                  <i class="bi bi-telephone fs-4 me-3 text-success "></i>
+                </a>
+            </div>
+            
+            <div>
+              <strong>Phone Support</strong>
+              <p class="mb-0 text-muted">+234 XXX XXX XXXX</p>
+            </div>
+          </div>
+
+          <div class="support-item d-flex align-items-start">
+            <i class="bi bi-clock fs-4 me-3"></i>
+            <div>
+              <strong>Response Time</strong>
+              <p class="mb-0 text-muted">Typically within 24 hours</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Support Form -->
+      <div class="col-lg-6">
+        <div class="card support-form p-4 border-0 rounded-4">
+          <h5 class="mb-3">Describe Your Issue</h5>
+          <p class="text-muted small mb-4">
+            Tell us what you're experiencing. The more details you provide, the
+            faster we can help resolve it.
+          </p>
+          {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success success-message">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+          <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                class="form-control support-input"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email Address</label>
+              <input
+                type="email"
+                name="email"
+                class="form-control support-input"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Describe your issue</label>
+              <textarea
+                class="form-control support-input"
+                name="message"
+                rows="4"
+                placeholder="Explain the problem you're facing..."
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 support-btn">
+              Submit Request
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

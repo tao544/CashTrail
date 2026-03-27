@@ -48,6 +48,15 @@
 //   updateMonthlySpending([5000, 7000, 4000, 6000, 8000, 3000]); // Jan–Jun
 
 
+window.addEventListener("scroll", function () {
+  const navbar = document.getElementById("mainNavbar");
+  if (window.scrollY > 50) {
+    navbar.classList.add("scrolled");
+  } else {
+    navbar.classList.remove("scrolled");
+  }
+});
+
 
 function togglePassword() {
     const passwordInput = document.getElementById('passwordInput');
@@ -63,3 +72,6 @@ function togglePassword() {
         passwordIcon.classList.add('bi-eye');
     }
 }
+
+
+

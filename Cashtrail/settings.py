@@ -167,4 +167,26 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 SOCIALACCOUNT_QUERY_EMAIL = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = 'adeedraiment@gmail.com'
+EMAIL_HOST_PASSWORD = 'qdapwkkafqivjlmc'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+
+
+
+
+
+
+
+
 AUTH_USER_MODEL = 'main.CustomUser'

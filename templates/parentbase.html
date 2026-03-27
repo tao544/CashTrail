@@ -35,7 +35,7 @@
     <hr class="sidebar-divider">
 
     <ul class="nav nav-pills flex-column gap-2">
-      <li><a class="nav-link text-light" href="{% url 'mychildren' %}"><i class="fas fa-users me-2"></i> My Children</a></li>
+      <li><a class="nav-link text-light active" href="{% url 'mychildren' %}"><i class="fas fa-users me-2"></i> My Children</a></li>
       <li><a class="nav-link text-light" href="{% url 'Fundwallet' %}"><i class="fas fa-wallet me-2"></i> Fund Wallet</a></li>
       {% comment %} <li><a class="nav-link text-light" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li> {% endcomment %}
     </ul>
@@ -65,9 +65,9 @@
       <h6 class="fw-semibold fs-6 text-light">Welcome, {{ request.user.first_name }}</h6>
       <small class="text-light">{{ request.user.email }}</small>
       <ul class="nav nav-pills flex-column gap-2 mt-3">
-        <li><a class="nav-link text-light active" href="{% url 'mychildren' %}"><i class="fas fa-users me-2"></i> My Children</a></li>
+        <li><a class="nav-link text-light active" href="{% url 'mychildren' %} "><i class="fas fa-users me-2"></i> My Children</a></li>
         <li><a class="nav-link text-light" href="{% url 'Fundwallet' %}"><i class="fas fa-wallet me-2"></i> Fund Wallet</a></li>
-        <li><a class="nav-link text-light" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+        {% comment %} <li><a class="nav-link text-light" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li> {% endcomment %}
       </ul>
       <a class="nav-link text-danger mt-auto" href="{% url 'account_logout' %}">
         <i class="fas fa-sign-out-alt me-2"></i> Logout

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db import transaction as db_transaction
+from django.core.mail import send_mail
 from django.db.models.functions import TruncMonth, TruncDay
 from django.contrib.auth import get_user_model, authenticate, login
 from django.utils import timezone
@@ -11,6 +12,7 @@ from django.core.paginator import Paginator
 from decimal import Decimal
 from .models import Transaction, ChildAccount
 from .models import CustomUser
+from .models import SupportMessage
 from .forms import ChildExpenseForm
 
 
@@ -26,6 +28,50 @@ def home(request):
     return render(request, "index.html")
 
 
+
+def support(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        message = request.POST.get("message")
+
+        # ✅ Save to database
+        SupportMessage.objects.create(
+            name=name,
+            email=email,
+            message=message
+        )
+
+        # ✅ Send email
+        full_message = f"""
+New Support Request from {name} <{email}>:
+
+Name: {name}
+Email: {email}
+
+Message:
+{message}
+"""
+        send_mail(
+    subject="CashTrail Support Request",
+    message=full_message,
+    from_email='adeedraiment@gmail.com',  # your Gmail
+    recipient_list=['adepojutaoheed23@gmail.com'],  # recipient (can be your same Gmail)
+)
+        # ✅ Success message
+        messages.success(request, "Message sent successfully!")
+
+        return redirect("support")  # same page reload
+
+    return render(request, "support.html")
+
+
+
+def support_view(request):
+    
+
+    return render(request, "support.html")
+
 # ------------------------
 # DASHBOARD ROUTER
 # ------------------------
@@ -37,6 +83,9 @@ def dashboard(request):
 
     if request.user.role == "child":
         return redirect("childrendashboard")
+
+
+
 
 
 # ------------------------

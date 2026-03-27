@@ -25,40 +25,59 @@
 
 {% if not request.user.is_authenticated %}
   {% block page_navbar %}
-<nav class="navbar navbar-expand-lg navbar-dark"
-     style="background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);">
+<nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar" style="background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);">
   <div class="container-fluid">
-    <!-- Brand -->
+
+    <!-- Logo -->
     <a class="navbar-brand ms-4" href="#">
-      <img height="60px" src="{% static 'image/cashtrail-darklogo.png' %}" />
+      <img height="55px" src="{% static 'image/cashtrail-darklogo.png' %}" />
     </a>
 
-    <!-- Toggler -->
+    <!-- Toggle -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarNav" aria-controls="navbarNav"
-            aria-expanded="false" aria-label="Toggle navigation">
+            data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Collapsible content -->
-    <div class="collapse navbar-collapse justify-content-end me-4" id="navbarNav">
-      <ul class="navbar-nav d-flex flex-row align-items-center">
-        <li class="nav-item me-2">
-          <a href="{% provider_login_url 'google' %}" class="btn btn-primary px-4 fw-semibold shadow-sm">
-            Parent Login
-          </a>
+    <!-- Nav Content -->
+    <div class="collapse navbar-collapse justify-content-between me-4 text-light" id="navbarNav">
+
+      <!-- LEFT LINKS -->
+      <ul class="navbar-nav mx-auto ">
+
+        <li class="nav-item ">
+          <a class="nav-link active nav-scroll" href="{% url 'home' %}#about">About</a>
         </li>
+
         <li class="nav-item">
-          <a href="{% url 'child_login' %}" class="btn btn-outline-light px-4 fw-semibold shadow-sm ">
-            Child Login
-          </a>
+          <a class="nav-link nav-scroll" href="{% url 'home' %}#how-it-works">How It Works</a>
         </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-scroll" href="{% url 'home' %}#faq">FAQ</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-scroll" href="{% url 'support' %}">Support</a>
+        </li>
+
+        <div class="nav-indicator"></div>
+
       </ul>
+
+      <!-- RIGHT BUTTONS -->
+      <div class="d-flex login-buttons">
+        <a href="{% provider_login_url 'google' %}" class="btn btn-primary me-2">
+          Parent Login
+        </a>
+        <a href="{% url 'child_login' %}" class="btn btn-outline-light">
+          Child Login
+        </a>
+      </div>
+
     </div>
   </div>
 </nav>
-
-
   {% endblock %}
 {% endif %}
 
@@ -87,5 +106,25 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+    
+    const navLinks = document.querySelectorAll(".nav-link, .dropdown-item");
+    const navbarCollapse = document.querySelector(".navbar-collapse");
+
+    navLinks.forEach(link => {
+        link.addEventListener("click", () => {
+            if (window.innerWidth < 992) {
+                const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+                    toggle: false
+                });
+                bsCollapse.hide();
+            }
+        });
+    });
+
+});
+
+    </script>
   </body>
 </html>

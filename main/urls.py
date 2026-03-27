@@ -1,10 +1,17 @@
 from django.contrib import admin
 from django.urls import path
 from .import views
+from .views import support_view
+
+
 urlpatterns = [
     path('', views.home, name="home"),
 
     path("dashboard/", views.dashboard, name="dashboard"),
+
+    path("support/", views.support, name="support"),
+    
+    # path('support/', support_view, name='support'),
 
     path('child-login/', views.child_login, name='child_login'),
 
