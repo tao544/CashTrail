@@ -55,7 +55,7 @@ Message:
         send_mail(
     subject="CashTrail Support Request",
     message=full_message,
-    from_email='adeedraiment@gmail.com',  # your Gmail
+    from_email='adepojutaoheed23@gmail.com',  # your Gmail
     recipient_list=['adepojutaoheed23@gmail.com'],  # recipient (can be your same Gmail)
 )
         # ✅ Success message
